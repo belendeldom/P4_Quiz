@@ -146,10 +146,12 @@ exports.testCmd = (rl,id) => {
 
 			rl.question(` ${colorize(quiz.question, 'red')}${colorize('?','red')}`,answer => {
 				if(quiz.answer.toLowerCase() === answer.toLowerCase().trim()){
-					biglog('CORRECTO', 'green');
+					log('Su respuesta es: ');
+					biglog('correcta', 'green');
 					rl.prompt();
 				}else{
-					biglog('INCORRECTO', 'red');
+					log('Su respuesta es: ');
+					biglog('incorrecta', 'red');
 					rl.prompt();
 				}
 			});
@@ -193,11 +195,11 @@ exports.playCmd = rl => {
 		rl.question(` ${colorize(quizi.question, 'red')}${colorize('?','red')}`,answer => {
 			if(quizi.answer.toLowerCase() === answer.toLowerCase().trim()){
 				score++;
-				log(`\n CORRECTO - Llevas acertadas ${score} preguntas \n `, 'magenta');
+				log(`\n correcta - Llevas acertadas ${score} preguntas \n `, 'magenta');
 				
 				playOne();
 			}else{
-				log(` ${colorize('INCORRECTO - Fin del examen. Has acertado:', 'magenta')} `);
+				log(` ${colorize('incorrecta - Fin del examen. Has acertado:', 'magenta')} `);
 				biglog(score,'blue');
 				rl.prompt();
 			};
