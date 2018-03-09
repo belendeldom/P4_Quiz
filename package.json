@@ -13,9 +13,11 @@
     "node"
   ],
   "author": "Jorge Ubeda Romero y Maria Belen Delgado Dominguez",
-  "license": "Unlicense",
+  "license": "BSD-2-Clause",
   "dependencies": {
     "chalk": "^2.3.2",
-    "figlet": "^1.2.0"
+    "figlet": "^1.2.0",
+    "sequelize": "^4.35.2",
+    "sqlite3": "^3.1.13"
   }
 }
