@@ -196,7 +196,7 @@ exports.playCmd = rl => {
               if (a.toLowerCase().trim() == quiz.answer.toLowerCase().trim()) {
                 score++;
                 log("Su respuesta es:", "blue");
-                log("C", "green");
+                log("Correcta", "green");
                 log(`Preguntas acertadas: ${colorize(score, "yellow")}`, "green");
                 jugar();
               } else {
