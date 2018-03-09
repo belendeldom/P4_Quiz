@@ -185,7 +185,6 @@ exports.playCmd = rl => {
       });
       const jugar = () => {
         if (toBeResolved.length === 0) {
-          log("¡Enhorabuena!", "green");
           log(`Fin. Has ganado. Preguntas acertadas: ${colorize(score, "yellow")}`, "green");
           rl.prompt();
         } else {
@@ -197,12 +196,12 @@ exports.playCmd = rl => {
               if (a.toLowerCase().trim() == quiz.answer.toLowerCase().trim()) {
                 score++;
                 log("Su respuesta es:", "blue");
-                log("correcta", "green");
+                log("C", "green");
                 log(`Preguntas acertadas: ${colorize(score, "yellow")}`, "green");
                 jugar();
               } else {
                 log("Su respuesta es:", "blue");
-                log("incorrecta", "red");
+                log("Incorrecta", "red");
                 log(`Fin. Has perdido. Preguntas acertadas: ${colorize(score, "yellow")}`, "green");
                 rl.prompt();
               }
