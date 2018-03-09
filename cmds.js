@@ -2,29 +2,11 @@ const { models } = require("./model");
 const Sequelize = require("sequelize");
 const { colorize, log, biglog, errorlog } = require("./out");
 
-const validateId = id => {
-  return new Sequelize.Promise((resolve, reject) => {
-    if (typeof id === "undefined") {
-      reject(new Error(`Falta el parámetro <id>.`));
-    } else {
-      id = parseInt(id);
-      if (Number.isNaN(id)) {
-        reject(new Error(`El valor del parámetro <id> no es un número`));
-      } else {
-        resolve(id);
-      }
-    }
-  });
-}
-
-const makeQuestion = (rl, text) => {
-  return new Sequelize.Promise((resolve, reject) => {
-    rl.question(colorize(text, "red"), answer => {
-      resolve(answer.trim());
-    });
-  });
-}
-
+/**
+* Muestra la ayuda.
+*
+* @param rl Objeto readline usado para implementar el CLI.
+*/
 exports.helpCmd = rl => {
   log("Commandos: ");
   log("h|help - Muestra esta ayuda.");
@@ -38,8 +20,13 @@ exports.helpCmd = rl => {
   log("credits - Créditos.");
   log("q|quit - Salir del programa.");
   rl.prompt();
-}
+};
 
+/**
+* Lista todos los quizzes existentes en el modelo.
+*
+* @param rl Objeto readline usado para implementar el CLI
+*/
 exports.listCmd = rl => {
   models.quiz.findAll()
     .each(quiz => {
@@ -51,8 +38,37 @@ exports.listCmd = rl => {
     .then(() => {
       rl.prompt();
     });
-}
+};
 
+/**
+* Esta función devuleve una promsea que:
+*   -Valida que se ha introducido un valor para el parametro.
+*   -Convierte el parametro en un numero entero
+* Si todo va bien, la promesa se satisface y devuelve el valor de id a usar
+*
+* @param id Parametro con el indice a validar
+*/
+const validateId = id => {
+  return new Sequelize.Promise((resolve, reject) => {
+    if (typeof id === "undefined") {
+      reject(new Error(`Falta el parámetro <id>.`));
+    } else {
+      id = parseInt(id);
+      if (Number.isNaN(id)) {
+        reject(new Error(`El valor del parámetro <id> no es un número`));
+      } else {
+        resolve(id);
+      }
+    }
+  });
+};
+
+/**
+* Muestra el quiz indicado en el parámetro: la pregunta y la respuesta.
+*
+* @param rl Objeto readline usado para implementar el CLI.
+* @param id Clave del quiz a mostrar.
+*/
 exports.showCmd = (rl, id) => {
   validateId(id)
     .then(id => models.quiz.findById(id))
@@ -68,9 +84,34 @@ exports.showCmd = (rl, id) => {
     .then(() => {
       rl.prompt();
     })
-}
+};
 
+/** Esta función convierte la llamada rl.question, que está basada en callbacks, en una función
+* basada en promesas.
+*
+* Esta función devuelve una promesa que cuando se cumple, proporciona el texto introducido
+* Entonces la llamada a then que hay que hacer la promesa devuelta será:
+*      .then(answer => {...})
+*
+* También colorea en rojo el texto de la pregunta, elimina espacios al princpio y al final
+* 
+* @param rl Objeto readline usado para implementar el CLI
+* @param text Pregunta que hay que hacerle al usuario
+*/
+const makeQuestion = (rl, text) => {
+  return new Sequelize.Promise((resolve, reject) => {
+    rl.question(colorize(text, "red"), answer => {
+      resolve(answer.trim());
+    });
+  });
+};
 
+/**
+* Añade un nuevo quiz al modelo.
+* Pregunta interactivamente por la pregunta y por la respuesta.
+*
+* @param rl Objeto readline usado para implementar el CLI.
+*/
 exports.addCmd = (rl, id) => {
   makeQuestion(rl, "Introduzca una pregunta: ")
     .then(q => {
@@ -95,8 +136,14 @@ exports.addCmd = (rl, id) => {
     .then(() => {
       rl.prompt();
     });
-}
+};
 
+/**
+* Borra un quiz del modelo.
+* 
+* @param rl Objeto readline usado para implementar el CLI.
+* @param id Clave del quiz a borrar en el modelo.
+*/
 exports.deleteCmd = (rl, id) => {
   validateId(id)
     .then(id => models.quiz.destroy({ where: { id } }))
@@ -106,8 +153,14 @@ exports.deleteCmd = (rl, id) => {
     .then(() => {
       rl.prompt();
     });
-}
+};
 
+/**
+* Edita un quiz del modelo.
+* 
+* @param rl Objeto readline usado para implementar el CLI.
+* @param id Clave del quiz a borrar en el modelo.
+*/
 exports.editCmd = (rl, id) => {
   validateId(id)
     .then(id => models.quiz.findById(id))
@@ -143,8 +196,14 @@ exports.editCmd = (rl, id) => {
     .then(() => {
       rl.prompt();
     });
-}
+};
 
+/**
+* Prueba un quiz, es decir, hace una pregunta del modelo a la que debemos contestar.
+* 
+* @param rl Objeto readline usado para implementar el CLI.
+* @param id Clave del quiz a borrar en el modelo.
+*/ 
 exports.testCmd = (rl, id) => {
   validateId(id)
     .then(id => models.quiz.findById(id))
@@ -173,8 +232,14 @@ exports.testCmd = (rl, id) => {
     .then(() => {
       rl.prompt();
     });
-}
+};
 
+/**
+* Pregunta todos los quizzes existentes en el modelo en orden aleatorio.
+* Se gana si se contesta a todos satisfactoriamente.
+*
+* @param rl Objeto readline usado para implementar el CLI.
+*/ 
 exports.playCmd = rl => {
   let score = 0;
   let toBeResolved = new Array();
@@ -220,16 +285,26 @@ exports.playCmd = rl => {
       }
       jugar();
     });
-}
+};
 
+/**
+* Muestra los nombres de los autores de la práctica.
+*
+* @param rl Objeto readline usado para implementar el CLI.
+*/
 exports.creditsCmd = rl => {
   log("Autores de la práctica: ");
   log("Jorge Ubeda Romero");
   log("Maria Belen Delgado Dominguez");
   rl.prompt();
-}
+};
 
+/**
+* Terminar el programa.
+*
+* @param rl Objeto readline usado para implementar el CLI.
+*/
 exports.quitCmd = rl => {
   rl.close();
   rl.prompt();
-}
+};
