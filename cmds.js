@@ -1,5 +1,7 @@
 const { models } = require("./model");
+
 const Sequelize = require("sequelize");
+
 const { colorize, log, biglog, errorlog } = require("./out");
 
 /**
@@ -48,7 +50,7 @@ exports.listCmd = (socket, rl) => {
 *
 * @param id Parametro con el indice a validar
 */
-const validateId = (socket, id) => {
+const validateId = (id) => {
   return new Sequelize.Promise((resolve, reject) => {
     if (typeof id === "undefined") {
       reject(new Error(`Falta el parámetro <id>.`));
@@ -98,7 +100,7 @@ exports.showCmd = (socket, rl, id) => {
 * @param rl Objeto readline usado para implementar el CLI
 * @param text Pregunta que hay que hacerle al usuario
 */
-const makeQuestion = (socket, rl, text) => {
+const makeQuestion = (rl, text) => {
   return new Sequelize.Promise((resolve, reject) => {
     rl.question(colorize(text, "red"), answer => {
       resolve(answer.trim());
@@ -307,5 +309,4 @@ exports.creditsCmd = (socket, rl) => {
 exports.quitCmd = (socket, rl) => {
   rl.close();
   socket.end();
-  rl.prompt();
 };

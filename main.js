@@ -1,6 +1,9 @@
 const readline = require("readline");
+
 const cmds = require("./cmds");
+
 const { colorize, log, biglog, errorlog } = require("./out");
+
 const net = require("net");
 
 net.createServer(socket => {
@@ -23,7 +26,7 @@ net.createServer(socket => {
 
   socket
   .on("end" , () => { rl.close(); })
-  .on("error" , () => { rl.close(); })
+  .on("error" , () => { rl.close(); });
 
   rl.prompt();
 
@@ -33,48 +36,61 @@ net.createServer(socket => {
     let cmd = args[0].toLowerCase().trim();
 
     switch (cmd) {
-      case "":
+      case " ":
+        rl.prompt();
         break;
+      
       case "h":
       case "help":
         cmds.helpCmd(socket, rl);
         break;
+      
       case "list":
         cmds.listCmd(socket, rl);
         break;
+      
       case "show":
         cmds.showCmd(socket, rl, args[1]);
         break;
+      
       case "add":
         cmds.addCmd(socket, rl, args[1]);
         break;
+      
       case "delete":
         cmds.deleteCmd(socket, rl, args[1]);
         break;
+      
       case "edit":
         cmds.editCmd(socket, rl, args[1]);
         break;
+      
       case "test":
         cmds.testCmd(socket, rl, args[1]);
         break;
+      
       case "p":
       case "play":
         cmds.playCmd(socket, rl);
         break;
+      
       case "credits":
         cmds.creditsCmd(socket, rl);
         break;
+      
       case "q":
       case "quit":
         cmds.quitCmd(socket, rl);
         break;
+      
       default:
         log(socket, `Comando desconocido: "${colorize(cmd, "red")}"`);
         log(socket, `Use ${colorize("help", "green")} para ver todos los comandos disponibles.`)
         break;
     }
 
-  }).on('close', () => {
+  })
+  .on('close', () => {
     log(socket, "Adiós", "red");
     // process.exit(0);
   });
